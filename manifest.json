@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "Your Mom — Focus",
+    "version": "0.1.0",
+    "description": "Set a focus task. On tab changes, pipes the active tab title to ElevenLabs.",
+    "action": { "default_popup": "popup.html", "default_title": "Your Mom" },
+    "permissions": ["tabs", "storage"],
+    "host_permissions": [
+      "<all_urls>",
+      "https://api.elevenlabs.io/*"
+    ],
+    "background": { "service_worker": "background.js" }
+  }
+  

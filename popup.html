@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Your Mom</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { 
+      margin: 0; 
+      font: 14px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #ee3140 0%, #c41e3a 100%);
+      min-height: 500px;
+    }
+    .wrap { width: 420px; padding: 0; }
+    .header {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+    }
+    .mum-image {
+      width: 300px;
+      height: auto;
+      border-radius: 12px;
+      object-fit: contain;
+      border: 4px solid #fff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      margin-bottom: 15px;
+      max-width: 90%;
+    }
+    .title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ee3140;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .card { 
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: none;
+      border-radius: 0;
+      padding: 20px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    }
+    h1 { margin: 0 0 16px; font-size: 18px; color: #2c3e50; font-weight: 600; }
+    label { font-size: 12px; color: #5a6c7d; font-weight: 500; }
+    input, textarea {
+      width: 100%; 
+      box-sizing: border-box; 
+      margin-top: 6px; 
+      margin-bottom: 12px;
+      padding: 12px; 
+      border: 2px solid #e1e8ed; 
+      border-radius: 12px; 
+      background: #fff;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #ee3140;
+      box-shadow: 0 0 0 3px rgba(238, 49, 64, 0.1);
+    }
+    textarea { resize: vertical; min-height: 64px; }
+    .row { display: flex; align-items: center; gap: 12px; }
+    .timer { 
+      margin-left: auto; 
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; 
+      font-weight: 700;
+      font-size: 16px;
+      color: #ee3140;
+    }
+    button {
+      padding: 12px 20px; 
+      border-radius: 12px; 
+      border: 0; 
+      cursor: pointer; 
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+    .start { 
+      background: linear-gradient(135deg, #ee3140, #c41e3a); 
+      color: #fff; 
+    }
+    .stop { 
+      background: linear-gradient(135deg, #ee3140, #a01e2d); 
+      color: #fff; 
+    }
+    .meta { 
+      margin-top: 12px; 
+      color: #5a6c7d; 
+      font-size: 12px; 
+      font-weight: 500;
+      padding: 8px 12px;
+      background: rgba(238, 49, 64, 0.1);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <img src="mum2.jpg" alt="Your Mum" class="mum-image">
+      <h1 class="title">Your Mum is watching!</h1>
+    </div>
+    <div class="card">
+      <h1>Start Working, Dear</h1>
+      <label>Task name</label>
+      <input id="taskName" placeholder="What are you supposed to be doing?">
+      <label>Description (optional)</label>
+      <textarea id="taskDesc" placeholder="Tell mum what this is about..."></textarea>
+
+      <div class="row">
+        <button id="toggle" class="start">Start focusing</button>
+        <div class="timer" id="timer">00:00:00</div>
+      </div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
