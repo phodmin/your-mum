@@ -185,6 +185,9 @@ async function onTabEvent() {
       } else if (currentUrl.includes('mama-roast-your-focus.lovable.app')) {
         messageToPlay = "Stop watching me";
         console.log("[YourMom] User is on mama-roast-your-focus.lovable.app, playing custom message");
+      } else if (currentUrl.includes('x.com/home')) {
+        messageToPlay = "Stop Doomscrolling you wanna be founder";
+        console.log("[YourMom] User is on x.com/home, playing custom message");
       } else {
         console.log("[YourMom] User is on other site, playing default focus reminder");
       }
