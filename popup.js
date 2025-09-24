@@ -1,6 +1,18 @@
 // ---------- tiny helpers ----------
 const $ = (id) => document.getElementById(id);
 
+function showStatus(message, type = 'info') {
+  const statusEl = $("status");
+  statusEl.textContent = message;
+  statusEl.className = `status ${type}`;
+  statusEl.style.display = 'block';
+  
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    statusEl.style.display = 'none';
+  }, 3000);
+}
+
 function format(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
   const h = Math.floor(s / 3600);
@@ -56,7 +68,7 @@ function setUI(focusing, startTs) {
 
   if (focusing && Number.isFinite(startTs) && startTs > 0) {
     console.log("[YourMum] STARTING TIMER! startTs:", startTs, "current time:", Date.now());
-    meta.textContent = "Focus mode is ON. Tab changes will ping ElevenLabs.";
+    meta.textContent = "Focus mode is ON. Tab changes will extract og tags and send to API.";
     
     const update = () => { 
       const elapsed = format(Date.now() - startTs);
@@ -122,6 +134,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     chrome.runtime.sendMessage({ type: "FOCUS_TOGGLED", focusing: nowFocusing });
     setUI(nowFocusing, startTs);
+    
+    if (nowFocusing) {
+      showStatus("Focus mode started! Og tags will be extracted on tab changes.", 'success');
+    } else {
+      showStatus("Focus mode stopped.", 'info');
+    }
   });
 });
 

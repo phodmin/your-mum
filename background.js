@@ -1,45 +1,68 @@
-// ---------- CONFIG: set your ElevenLabs creds ----------
-const ELEVEN_API_KEY = "<PUT_YOUR_XI_API_KEY_HERE>";   // xi-api-key
-const ELEVEN_VOICE_ID = "<VOICE_ID>";                  // e.g. Rachel
-// Endpoint using text-to-speech streaming; you can swap to any TTS endpoint you prefer.
-const ELEVEN_ENDPOINT = (voiceId) =>
-  `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
+// ---------- CONFIG: set your API endpoint ----------
+// Replace with your actual API endpoint
+const API_ENDPOINT = "https://your-api-endpoint.com/og-tags";
+const API_KEY = "<PUT_YOUR_API_KEY_HERE>"; // Optional API key
 // -------------------------------------------------------
 
 async function getFocusState() {
   return await chrome.storage.local.get({ focusing: false });
 }
 
-async function sendToElevenLabs(text) {
-  if (!ELEVEN_API_KEY || !ELEVEN_VOICE_ID) return;
+async function extractOgTagsFromTab(tabId) {
+  try {
+    // Send message to content script to extract og tags
+    const response = await chrome.tabs.sendMessage(tabId, { action: 'extractOgTags' });
+    
+    if (response && response.success) {
+      console.debug("[YourMom] Extracted og tags:", response.data);
+      return response.data;
+    } else {
+      console.warn("[YourMom] Failed to extract og tags:", response?.error);
+      return null;
+    }
+  } catch (error) {
+    console.warn("[YourMom] Error extracting og tags from tab:", error);
+    return null;
+  }
+}
+
+async function sendOgTagsToAPI(ogTags) {
+  if (!API_ENDPOINT || API_ENDPOINT === "https://your-api-endpoint.com/og-tags") {
+    console.warn("[YourMom] API endpoint not configured. Please update API_ENDPOINT in background.js");
+    return;
+  }
 
   try {
-    // Minimal example: request TTS MP3 for the title text.
-    const res = await fetch(ELEVEN_ENDPOINT(ELEVEN_VOICE_ID), {
+    const headers = {
+      "Content-Type": "application/json"
+    };
+    
+    // Add API key if configured
+    if (API_KEY && API_KEY !== "<PUT_YOUR_API_KEY_HERE>") {
+      headers["Authorization"] = `Bearer ${API_KEY}`;
+    }
+
+    const response = await fetch(API_ENDPOINT, {
       method: "POST",
-      headers: {
-        "xi-api-key": ELEVEN_API_KEY,
-        "Content-Type": "application/json",
-        "Accept": "audio/mpeg"
-      },
-      body: JSON.stringify({
-        text,
-        model_id: "eleven_turbo_v2",      // adjust to your account
-        voice_settings: { stability: 0.4, similarity_boost: 0.7 }
-      })
+      headers,
+      body: JSON.stringify(ogTags)
     });
 
-    // You could play the audio by piping to a new tab or using an HTMLAudioElement in a offscreen doc.
-    // For v1, we don't auto-play to avoid spam; just fire-and-forget.
-    console.debug("[YourMom] ElevenLabs response:", res.status);
-  } catch (e) {
-    console.warn("[YourMom] ElevenLabs error:", e);
+    if (response.ok) {
+      console.debug("[YourMom] Successfully sent og tags to API:", response.status);
+      const responseData = await response.json();
+      console.debug("[YourMom] API response:", responseData);
+    } else {
+      console.warn("[YourMom] API request failed:", response.status, response.statusText);
+    }
+  } catch (error) {
+    console.warn("[YourMom] Error sending og tags to API:", error);
   }
 }
 
 // Debounce so we don't hammer the API while pages load
 let debounceTimer;
-function onTabEvent() {
+async function onTabEvent() {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(async () => {
     const { focusing } = await getFocusState();
@@ -47,11 +70,27 @@ function onTabEvent() {
 
     // Find the active tab in the focused window
     const [active] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-    if (!active || !active.title) return;
+    if (!active) return;
 
-    const title = active.title;
-    // Send the active tab title to ElevenLabs
-    await sendToElevenLabs(`You are now on tab: ${title}`);
+    try {
+      // Extract og tags from the current tab
+      const ogTags = await extractOgTagsFromTab(active.id);
+      
+      if (ogTags) {
+        console.debug("[YourMom] Sending og tags to API:", ogTags);
+        await sendOgTagsToAPI(ogTags);
+        
+        // Store the extracted og tags for display in popup
+        await chrome.storage.local.set({ 
+          lastExtractedOgTags: ogTags,
+          lastExtractionTime: Date.now()
+        });
+      } else {
+        console.warn("[YourMom] No og tags extracted from tab:", active.url);
+      }
+    } catch (error) {
+      console.warn("[YourMom] Error processing tab event:", error);
+    }
   }, 350);
 }
 

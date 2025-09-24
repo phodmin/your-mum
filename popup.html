@@ -102,6 +102,57 @@
       background: rgba(238, 49, 64, 0.1);
       border-radius: 8px;
     }
+    .status {
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .status.success {
+      background: rgba(34, 197, 94, 0.1);
+      color: #059669;
+    }
+    .status.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+    }
+    .status.info {
+      background: rgba(59, 130, 246, 0.1);
+      color: #2563eb;
+    }
+    .site-info {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    .site-info h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    .site-info p {
+      margin: 4px 0;
+      font-size: 12px;
+      color: #5a6c7d;
+      line-height: 1.4;
+    }
+    .site-info .url {
+      color: #ee3140;
+      font-weight: 500;
+      word-break: break-all;
+    }
+    .site-info .description {
+      font-style: italic;
+      margin-top: 8px;
+    }
+    .site-info .no-data {
+      color: #9ca3af;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -122,6 +173,13 @@
         <div class="timer" id="timer">00:00:00</div>
       </div>
       <div class="meta" id="meta"></div>
+      <div class="status" id="status" style="display: none;"></div>
+      
+      <div class="site-info" id="siteInfo" style="display: none;">
+        <h3>Current Site</h3>
+        <p class="url" id="siteUrl">Loading...</p>
+        <p class="description" id="siteDescription">No description available</p>
+      </div>
     </div>
   </div>
 
