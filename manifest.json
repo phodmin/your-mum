@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "description": "Set a focus task. On tab changes, extracts meta og tags and sends as JSON API request.",
     "action": { "default_popup": "popup.html", "default_title": "Your Mom" },
-    "permissions": ["tabs", "storage", "activeTab"],
+    "permissions": ["tabs", "storage", "activeTab", "scripting"],
     "host_permissions": [
       "<all_urls>"
     ],

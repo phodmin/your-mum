@@ -5,9 +5,10 @@ A Chrome extension that extracts Open Graph (og) meta tags from web pages when t
 ## Features
 
 - **Focus Mode**: Start/stop focus sessions with task tracking
+- **Sound Alerts**: Plays "YO Mama is watching you, focus" when you change websites during focus mode
 - **OG Tag Extraction**: Automatically extracts Open Graph meta tags from web pages
 - **API Integration**: Sends extracted data as JSON to your configured API endpoint
-- **Real-time Status**: Shows extraction status in the popup interface
+- **Real-time Status**: Shows extraction status and sound alert status in the popup interface
 
 ## Setup
 
@@ -34,14 +35,22 @@ const API_KEY = "your-api-key-here"; // Optional
    - Enter a task name
    - Click "Start focusing"
 
-2. **OG Tag Extraction**:
+2. **Sound Alerts**:
+   - When focus mode is active, the extension will play custom sound alerts based on the website
+   - Uses ElevenLabs text-to-speech with different messages:
+     - **Default**: "YO Mama is watching you, focus"
+     - **YouTube**: "stop watching dumb youtube videos"
+     - **Y Combinator**: "Dont go to Y Combinator, join EF"
+   - Allowed sites (no sound): elevenlabs.io, docs.google.com, wikipedia.org
+
+3. **OG Tag Extraction**:
    - When focus mode is active, the extension will automatically extract og tags when you switch tabs
    - Extracted data includes:
      - `og:title`, `og:description`, `og:image`, `og:url`, `og:type`, etc.
      - Page title, URL, and timestamp
      - Additional meta tags (description, keywords)
 
-3. **API Requests**:
+4. **API Requests**:
    - Data is sent as JSON POST requests to your configured endpoint
    - Includes Authorization header if API key is configured
 
