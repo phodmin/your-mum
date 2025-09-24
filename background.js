@@ -188,6 +188,9 @@ async function onTabEvent() {
       } else if (currentUrl.includes('x.com/home')) {
         messageToPlay = "Stop Doomscrolling you wanna be founder";
         console.log("[YourMom] User is on x.com/home, playing custom message");
+      } else if (currentUrl.includes('instagram.com')) {
+        messageToPlay = "looking at your ex again? go back to building!";
+        console.log("[YourMom] User is on Instagram, playing custom message");
       } else {
         console.log("[YourMom] User is on other site, playing default focus reminder");
       }
