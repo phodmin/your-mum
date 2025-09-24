@@ -1,11 +1,92 @@
-// ---------- CONFIG: set your API endpoint ----------
-// Replace with your actual API endpoint
-const API_ENDPOINT = "https://your-api-endpoint.com/og-tags";
-const API_KEY = "<PUT_YOUR_API_KEY_HERE>"; // Optional API key
+// ---------- CONFIG: ElevenLabs API ----------
+const ELEVENLABS_API_KEY = "ed287bb4b34fd28bc81a36f191ec57992ab85c1a9bce9938842d23f9f3449dda";
+const ELEVENLABS_VOICE_ID = "PQ5ojWHyqC0QVkjU3pNe";
+const ELEVENLABS_API_URL = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`;
+const FOCUS_MESSAGE = "YO Mama is watching you, focus";
 // -------------------------------------------------------
 
 async function getFocusState() {
   return await chrome.storage.local.get({ focusing: false });
+}
+
+async function generateAndPlaySpeech(text, tabId) {
+  try {
+    console.log("[YourMom] Generating speech for:", text);
+    
+    const response = await fetch(ELEVENLABS_API_URL, {
+      method: 'POST',
+      headers: {
+        'Accept': 'audio/mpeg',
+        'Content-Type': 'application/json',
+        'xi-api-key': ELEVENLABS_API_KEY
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: 'eleven_monolingual_v1',
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.5
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`ElevenLabs API error: ${response.status} ${response.statusText}`);
+    }
+
+    const audioBlob = await response.blob();
+    const audioArrayBuffer = await audioBlob.arrayBuffer();
+    const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(audioArrayBuffer)));
+    
+    // Send audio data to content script to play
+    try {
+      await chrome.tabs.sendMessage(tabId, {
+        action: 'playAudio',
+        audioData: audioBase64,
+        mimeType: 'audio/mpeg'
+      });
+      console.log("[YourMom] Audio sent to content script for playback");
+    } catch (error) {
+      console.warn("[YourMom] Could not send audio to content script:", error.message);
+      // Fallback: try to inject and play audio directly
+      await chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        func: playAudioFromBase64,
+        args: [audioBase64, 'audio/mpeg']
+      });
+    }
+    
+  } catch (error) {
+    console.error("[YourMom] Error generating/playing speech:", error);
+    throw error;
+  }
+}
+
+// Function to be injected into the page to play audio
+function playAudioFromBase64(base64Data, mimeType) {
+  try {
+    const binaryString = atob(base64Data);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: mimeType });
+    const audioUrl = URL.createObjectURL(blob);
+    
+    const audio = new Audio(audioUrl);
+    audio.volume = 0.8;
+    
+    audio.onended = () => {
+      URL.revokeObjectURL(audioUrl);
+    };
+    
+    audio.play().catch(error => {
+      console.error('Error playing audio:', error);
+      URL.revokeObjectURL(audioUrl);
+    });
+  } catch (error) {
+    console.error('Error in playAudioFromBase64:', error);
+  }
 }
 
 async function extractOgTagsFromTab(tabId) {
@@ -63,6 +144,7 @@ async function sendOgTagsToAPI(ogTags) {
 
 // Debounce so we don't hammer the API while pages load
 let debounceTimer;
+
 async function onTabEvent() {
   console.log("[YourMom] Tab event triggered");
   clearTimeout(debounceTimer);
@@ -82,6 +164,36 @@ async function onTabEvent() {
     }
 
     console.log("[YourMom] Processing tab:", active.id, "URL:", active.url);
+
+    // Check what message to play based on current site
+    const currentUrl = active.url;
+    const allowedSites = ['elevenlabs.io', 'docs.google.com', 'wikipedia.org'];
+    const isOnAllowedSite = allowedSites.some(site => currentUrl.includes(site));
+    
+    if (isOnAllowedSite) {
+      console.log("[YourMom] User is on an allowed site, no sound needed");
+    } else {
+      // Determine custom message based on site
+      let messageToPlay = FOCUS_MESSAGE; // Default message
+      
+      if (currentUrl.includes('youtube.com')) {
+        messageToPlay = "stop watching dumb youtube videos";
+        console.log("[YourMom] User is on YouTube, playing custom message");
+      } else if (currentUrl.includes('ycombinator.com')) {
+        messageToPlay = "Dont go to Y Combinator, join EF";
+        console.log("[YourMom] User is on Y Combinator, playing custom message");
+      } else {
+        console.log("[YourMom] User is on other site, playing default focus reminder");
+      }
+      
+      try {
+        await generateAndPlaySpeech(messageToPlay, active.id);
+        console.log("[YourMom] Played custom message:", messageToPlay);
+      } catch (error) {
+        console.error("[YourMom] Failed to play custom message:", error);
+      }
+    }
+
 
     try {
       // Extract og tags from the current tab

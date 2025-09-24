@@ -175,6 +175,46 @@
       color: #9ca3af;
       font-style: italic;
     }
+    .sound-info {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    .sound-info h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    .sound-info p {
+      margin: 4px 0;
+      font-size: 12px;
+      color: #5a6c7d;
+      line-height: 1.4;
+    }
+    .sound-info .sound-status {
+      color: #ee3140;
+      font-weight: 500;
+    }
+    .sound-info .sound-message {
+      font-style: italic;
+      margin-top: 8px;
+      color: #6b7280;
+    }
+    .sound-messages {
+      margin-top: 8px;
+    }
+    .sound-messages .sound-message {
+      margin: 4px 0;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .sound-messages strong {
+      color: #ee3140;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -201,6 +241,16 @@
         <h3>Current Site</h3>
         <p class="url" id="siteUrl">Loading...</p>
         <p class="description" id="siteDescription">No description available</p>
+      </div>
+      
+      <div class="sound-info" id="soundInfo" style="display: none;">
+        <h3>🔊 Sound Alert</h3>
+        <p class="sound-status" id="soundStatus">Ready to play focus reminder</p>
+        <div class="sound-messages">
+          <p class="sound-message"><strong>Default:</strong> "YO Mama is watching you, focus"</p>
+          <p class="sound-message"><strong>YouTube:</strong> "stop watching dumb youtube videos"</p>
+          <p class="sound-message"><strong>Y Combinator:</strong> "Dont go to Y Combinator, join EF"</p>
+        </div>
       </div>
     </div>
   </div>

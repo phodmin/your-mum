@@ -56,6 +56,19 @@ async function loadSiteInfo(ogTags, extractionTime) {
   }
 }
 
+function updateSoundInfo(focusing) {
+  const soundInfoEl = $("soundInfo");
+  const soundStatusEl = $("soundStatus");
+  
+  if (focusing) {
+    soundInfoEl.style.display = 'block';
+    soundStatusEl.textContent = 'Active - Will play on any website except allowed sites';
+    soundStatusEl.style.color = '#ee3140';
+  } else {
+    soundInfoEl.style.display = 'none';
+  }
+}
+
 function format(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
   const h = Math.floor(s / 3600);
@@ -114,7 +127,7 @@ function setUI(focusing, startTs) {
 
   if (focusing && Number.isFinite(startTs) && startTs > 0) {
     console.log("[YourMum] STARTING TIMER! startTs:", startTs, "current time:", Date.now());
-    meta.textContent = "Focus mode is ON. Tab changes will extract og tags and send to API.";
+    meta.textContent = "Focus mode is ON. Sound will play on any website except allowed sites.";
     
     const update = () => { 
       const elapsed = format(Date.now() - startTs);
@@ -130,6 +143,9 @@ function setUI(focusing, startTs) {
     timer.textContent = "00:00:00";
     meta.textContent = "Focus mode is OFF.";
   }
+  
+  // Update sound info display
+  updateSoundInfo(focusing);
 }
 
 async function saveFields() {
@@ -182,7 +198,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setUI(nowFocusing, startTs);
     
     if (nowFocusing) {
-      showStatus("Focus mode started! Og tags will be extracted on tab changes.", 'success');
+      showStatus("Focus mode started! Sound will play on any website except allowed sites.", 'success');
     } else {
       showStatus("Focus mode stopped.", 'info');
     }

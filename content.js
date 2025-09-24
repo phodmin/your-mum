@@ -71,9 +71,53 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.error('[YourMom] Error extracting og tags:', error);
       sendResponse({ success: false, error: error.message });
     }
+  } else if (request.action === 'playAudio') {
+    try {
+      playAudioFromBase64(request.audioData, request.mimeType);
+      sendResponse({ success: true });
+    } catch (error) {
+      console.error('[YourMom] Error playing audio:', error);
+      sendResponse({ success: false, error: error.message });
+    }
   }
   return true; // Keep message channel open for async response
 });
+
+// Function to play audio from base64 data
+function playAudioFromBase64(base64Data, mimeType) {
+  try {
+    console.log('[YourMom] Playing audio from base64 data');
+    const binaryString = atob(base64Data);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: mimeType });
+    const audioUrl = URL.createObjectURL(blob);
+    
+    const audio = new Audio(audioUrl);
+    audio.volume = 0.8;
+    
+    audio.onended = () => {
+      URL.revokeObjectURL(audioUrl);
+      console.log('[YourMom] Audio playback finished');
+    };
+    
+    audio.onerror = (error) => {
+      console.error('[YourMom] Audio playback error:', error);
+      URL.revokeObjectURL(audioUrl);
+    };
+    
+    audio.play().catch(error => {
+      console.error('[YourMom] Error starting audio playback:', error);
+      URL.revokeObjectURL(audioUrl);
+    });
+    
+    console.log('[YourMom] Audio playback started');
+  } catch (error) {
+    console.error('[YourMom] Error in playAudioFromBase64:', error);
+  }
+}
 
 // Auto-extract when page loads (optional - can be triggered by background script instead)
 if (document.readyState === 'loading') {
