@@ -177,20 +177,23 @@ async function onTabEvent() {
       let messageToPlay = FOCUS_MESSAGE; // Default message
       
       if (currentUrl.includes('youtube.com')) {
-        messageToPlay = "stop watching dumb youtube videos";
+        messageToPlay = "Are you wasting time on dumb youtube videos again? Get back to work!";
         console.log("[YourMom] User is on YouTube, playing custom message");
       } else if (currentUrl.includes('ycombinator.com')) {
-        messageToPlay = "Dont go to Y Combinator, join EF";
+        messageToPlay = "Dont go to Y Combinator, join Enrepreneur First! YCombinator is overrated!";
         console.log("[YourMom] User is on Y Combinator, playing custom message");
       } else if (currentUrl.includes('mama-roast-your-focus.lovable.app')) {
-        messageToPlay = "Stop watching me";
+        messageToPlay = "Stop watching me. Get back to work!";
         console.log("[YourMom] User is on mama-roast-your-focus.lovable.app, playing custom message");
       } else if (currentUrl.includes('x.com/home')) {
-        messageToPlay = "Stop Doomscrolling you wanna be founder";
+        messageToPlay = "Stop Doomscrolling you wanna-be founder! Stay focused!";
         console.log("[YourMom] User is on x.com/home, playing custom message");
       } else if (currentUrl.includes('instagram.com')) {
-        messageToPlay = "looking at your ex again? go back to building!";
+        messageToPlay = "Are you looking at your ex again? Go back to building! Make something people want!";
         console.log("[YourMom] User is on Instagram, playing custom message");
+      } else if (currentUrl.includes('joinef.com')) {
+        messageToPlay = "Atta-boy! Good stuff, apply to Entrepreneur First and apply yourself!";
+        console.log("[YourMom] User is on Entrepreneur First, playing custom message");
       } else {
         console.log("[YourMom] User is on other site, playing default focus reminder");
       }

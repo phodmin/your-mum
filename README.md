@@ -39,11 +39,12 @@ const API_KEY = "your-api-key-here"; // Optional
    - When focus mode is active, the extension will play custom sound alerts based on the website
    - Uses ElevenLabs text-to-speech with different messages:
      - **Default**: "YO Mama is watching you, focus"
-     - **YouTube**: "stop watching dumb youtube videos"
-     - **Y Combinator**: "Dont go to Y Combinator, join EF"
-     - **Mama Roast**: "Stop watching me"
-     - **X/Twitter**: "Stop Doomscrolling you wanna be founder"
-     - **Instagram**: "looking at your ex again? go back to building!"
+     - **YouTube**: "Are you wasting time on dumb youtube videos again? Get back to work!"
+     - **Y Combinator**: "Dont go to Y Combinator, join Enrepreneur First! YCombinator is overrated!"
+     - **Mama Roast**: "Stop watching me. Get back to work!"
+     - **X/Twitter**: "Stop Doomscrolling you wanna-be founder! Stay focused!"
+     - **Instagram**: "Are you looking at your ex again? Go back to building! Make something people want!"
+     - **Entrepreneur First**: "Atta-boy! Good stuff, apply to Entrepreneur First and apply yourself!"
    - Allowed sites (no sound): elevenlabs.io, docs.google.com, wikipedia.org
 
 3. **OG Tag Extraction**:
