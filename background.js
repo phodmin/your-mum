@@ -81,10 +81,23 @@ async function onTabEvent() {
         await sendOgTagsToAPI(ogTags);
         
         // Store the extracted og tags for display in popup
+        const extractionTime = Date.now();
         await chrome.storage.local.set({ 
           lastExtractedOgTags: ogTags,
-          lastExtractionTime: Date.now()
+          lastExtractionTime: extractionTime
         });
+        
+        // Notify popup if it's open
+        try {
+          await chrome.runtime.sendMessage({
+            type: "OG_TAGS_EXTRACTED",
+            ogTags: ogTags,
+            extractionTime: extractionTime
+          });
+        } catch (error) {
+          // Popup might not be open, that's okay
+          console.debug("[YourMom] Could not send message to popup:", error.message);
+        }
       } else {
         console.warn("[YourMom] No og tags extracted from tab:", active.url);
       }
