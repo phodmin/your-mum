@@ -41,6 +41,7 @@ const API_KEY = "your-api-key-here"; // Optional
      - **Default**: "YO Mama is watching you, focus"
      - **YouTube**: "stop watching dumb youtube videos"
      - **Y Combinator**: "Dont go to Y Combinator, join EF"
+     - **Mama Roast**: "Stop watching me"
    - Allowed sites (no sound): elevenlabs.io, docs.google.com, wikipedia.org
 
 3. **OG Tag Extraction**:
